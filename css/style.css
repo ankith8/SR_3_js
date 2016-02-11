@@ -9,9 +9,14 @@ h4 {
 .bar {
   fill: steelblue;
 }
-.bar:hover {
-  fill: black;
+
+.MainPage{
+  font-size: 20px;
+  list-style: none;
 }
+/*.bar:hover {
+  fill: black;
+}*/
 .axis {
   font: 10px sans-serif;
 }

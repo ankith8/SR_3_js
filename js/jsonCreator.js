@@ -1,5 +1,11 @@
-const readline = require('readline');
-const fs = require('fs');
+// Make 'stacked bar charts' of the following data, plot only the top 15 countries by GDP, for the year 2005, in descending order.
+// GDP (constant 2005 US$) + GNI (constant 2005 US$)
+// GDP per capita (constant 2005 US$) + GNI per capita (constant 2005 US$)
+// Plot the GDP growth for India over the given time period.
+// Plot the aggregated "GDP per capita (constant 2005 US$)" by continent, over the time period 1960-2015.
+
+var readline = require('readline');
+var fs = require('fs');
 
 // variable Declarations
 var headings = new Array();
@@ -89,9 +95,9 @@ function createLookUpData()
     fs.writeFile(allCountriesJson,JSON.stringify(countryList),'utf-8', function (err) {
       if (err) return console.log(err);
     });
-    fs.writeFile(countryContinentPairJson,JSON.stringify(countryContinentList),'utf-8', function (err) {
-      if (err) return console.log(err);
-    });
+    // fs.writeFile(countryContinentPairJson,JSON.stringify(countryContinentList),'utf-8', function (err) {
+    //   if (err) return console.log(err);
+    // });
   });
 }
 createLookUpData();
@@ -151,9 +157,7 @@ var rl = readline.createInterface({
 
 function ReadLines()
 {
-  var posCountryName;
-  var posIndicatorName;
-  var pos2005;
+  var posCountryName,posIndicatorName,pos2005;
 
   rl.on('line', function (line)
   {
@@ -224,13 +228,14 @@ function ReadLines()
         {
           // Plan // select the valid country name
           // identify the continent to which the country belongs to .
-          // Add the GDP Percap value to the continent object's value.
-          // push the continent to the json
           var conti = continents[arr[posCountryName]]
           if(conti !== undefined)
           {
-            console.log(conti);
+            // Add the GDP Percap value to the continent object's value.
             continentLists[conti] = aggregateGDP(continentLists[conti], arr);
+            // push the continent to the json
+            // console.log(conti+" : "+continentLists[conti]);
+            // Remember this does not care anyhing about the country. this only deals with the continent
           }
 
         }
@@ -259,14 +264,16 @@ function ReadLines()
     // Problem 2 end
 
     // Problem 3
-    for(var i = 4,len=headings.length ; i < len ; i++)
+    for(var i = startIndex,len=headings.length ; i < len ; i++)
     {
-        var json = {};
-        json["year"] = headings[i];
+        var jsonOb = {};
+        jsonOb["year"] = headings[i];
         for(j in continentLists) {
-          json[j] = continentLists[j][i];
+          jsonOb[j] = continentLists[j][i];
+          // console.log( continentLists[j][i]+"****"+jsonOb[j]);
         }
-        gdpContinent.push(json);
+        // console.log(json);
+        gdpContinent.push(jsonOb);
     }
     fs.writeFile(gdpAggregatedData,JSON.stringify(gdpContinent),'utf-8', function (err) {
       if (err) return console.log(err);
@@ -283,8 +290,9 @@ function aggregateGDP(continentObj, arr) {
   }
   else
   {
-    for(var i=4; i<arr.length; i++) {
+    for(var i=startIndex ,len=arr.length; i<len; i++) {
       if(arr[i].length > 0) {
+        // console.log(continentObj[i]+"****"+arr[i]);
         continentObj[i] = parseFloat(continentObj[i]) + parseFloat(arr[i]);
       }
     }
